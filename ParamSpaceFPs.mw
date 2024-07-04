@@ -1,0 +1,32 @@
+restart:
+with(plots):
+with(LinearAlgebra):
+u:=x-a*y-x^3-x*y^2, a*x+y-y^3-y*x^2-b;
+poly:=(x^3 - 1/b + (a^2 + 1)/b^2*x - 2*x^2/b);
+subs(x=_v+2/b/3, x^2=(_v+2/b/3)^2, x^3=(_v+2/b/3)^3, poly);
+subs(_v=x, %);
+collect(%, x);
+p:=-4/(3*b^2) + (a^2 + 1)/b^2;
+q:=-16/(27*b^3) - 1/b + 2*(a^2 + 1)/(3*b^3);
+de:=(q/2)^2+(p/3)^3;
+solve(de, b);
+P0:=plot(sqrt(6 + 54*a^2 + 6*sqrt(-27*a^6 + 27*a^4 - 9*a^2 + 1))/9, a=0..1):
+P1:=plot(sqrt(6 + 54*a^2 - 6*sqrt(-27*a^6 + 27*a^4 - 9*a^2 + 1))/9, a=0..1):
+P2:=textplot({[0.15, 0.3, "Three Fixed Points Inside"], [0.15, 0.5, "One Fixed Point Outside"], [0.25, 0.05, "One Fixed Point Outside"], [0.4, 0.2, "Two Fixed Points on the Boundary"]}):
+display([P0,P1, P2]);
+fp:=([allvalues(solve({u[1]=0, u[2]=0}, {x, y}))][1]);
+M:=Matrix([[diff(u[1], x), diff(u[1], y)], [diff(u[2], x), diff(u[2], y)]]);
+J:=subs(fp, [Eigenvalues(M)[1], Eigenvalues(M)[2]]):
+repart:=(J[1]+J[2])/2;
+impart:=(J[1]-J[2])/2;
+solve(repart, b);
+solve(impart, b);
+b0:=sqrt(8*a^2 + 2)/4;
+b1:=sqrt(2*a^3 - 2*a^2 + a);
+plot([b0,b1], a=0..1, color=["Red", "Blue"], legend=["Real Part Bounding", "Imagine Part Bounding"]);
+P0:=plot([b0,b1], a=0..1, color=["Red", "Blue"]):
+P1:=plot(sqrt(6 + 54*a^2 + 6*sqrt(-27*a^6 + 27*a^4 - 9*a^2 + 1))/9, a=0..1):
+P2:=plot(sqrt(6 + 54*a^2 - 6*sqrt(-27*a^6 + 27*a^4 - 9*a^2 + 1))/9, a=0..1):
+P3:=textplot({[0.4, 0.1, "Spiral node: unstable"], [0.3, 0.6, "Spiral node: asymtotically stable"], [0.75, 0.25, "On the real part bounding: Centre (or elliptic): stable"]}):
+P4:=textplot({[0.45, 0.75, "On the imagine bounding above the real bounding: \nNode: asymptotically stable"]}):
+display([P0, P1, P2, P3, P4]);
